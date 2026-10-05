@@ -12,7 +12,7 @@ It always makes a backup before saving.
   **Unlock All** brings everything back. Lunar coins and real game statistics are not touched.
 - The whole program is now in English.
 
-## DLC tools (added)
+## DLC tools
 
 - **Unlock by DLC** (sidebar, *Quick actions*): unlocks everything from one pack (Base, Survivors of the Void,
   Seekers of the Storm, Alloyed Collective) in the profile. This edits progress only; playing DLC content
