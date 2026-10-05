@@ -1,9 +1,46 @@
 """Shared GUI components used by all views."""
 from __future__ import annotations
 
+import tkinter as tk
+
 import customtkinter as ctk
 
+from ..core import ICON_ICO, ICON_PNG
 from ..theme import Palette
+
+
+class IconToplevel(ctk.CTkToplevel):
+    """CTkToplevel that keeps the app icon.
+
+    CustomTkinter schedules a reset to its own default icon ~200 ms after a
+    Toplevel opens (Windows), which wipes any icon set in __init__. So the
+    icon is set immediately and re-applied after that reset has run.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._apply_icon()
+        self.after(250, self._apply_icon)
+        self.after(600, self._apply_icon)
+
+    def _apply_icon(self) -> None:
+        try:
+            if not self.winfo_exists():
+                return
+        except Exception:
+            return
+        try:
+            if ICON_PNG.is_file():
+                if not hasattr(self, "_icon_img"):
+                    self._icon_img = tk.PhotoImage(file=str(ICON_PNG))
+                self.iconphoto(False, self._icon_img)
+        except Exception:
+            pass
+        try:
+            if ICON_ICO.is_file():
+                self.iconbitmap(str(ICON_ICO))
+        except Exception:
+            pass
 
 
 class BaseView(ctk.CTkFrame):

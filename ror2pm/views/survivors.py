@@ -11,7 +11,7 @@ from ..core import (
     survivor_entries,
 )
 from ..theme import Palette
-from .base import BaseView, CheckRow, ProgressBar, SectionTitle
+from .base import IconToplevel, BaseView, CheckRow, ProgressBar, SectionTitle
 
 
 class SurvivorsView(BaseView):
@@ -68,7 +68,7 @@ class SurvivorsView(BaseView):
         self._rebuild()
 
 
-class SurvivorDetail(ctk.CTkToplevel):
+class SurvivorDetail(IconToplevel):
     def __init__(self, app, data):
         super().__init__(app)
         self.app = app

@@ -31,13 +31,13 @@ from ..core import (
     unlock_all,
 )
 from ..theme import Palette
-from .base import BaseView, SectionTitle
+from .base import BaseView, IconToplevel, SectionTitle
 
 
 # =========================================================================
 # Coins
 # =========================================================================
-class CoinsDialog(ctk.CTkToplevel):
+class CoinsDialog(IconToplevel):
     def __init__(self, app):
         super().__init__(app)
         self.app = app
@@ -97,7 +97,7 @@ class CoinsDialog(ctk.CTkToplevel):
 # =========================================================================
 # Paste IDs
 # =========================================================================
-class PasteIDsDialog(ctk.CTkToplevel):
+class PasteIDsDialog(IconToplevel):
     def __init__(self, app):
         super().__init__(app)
         self.app = app
@@ -416,7 +416,7 @@ def run_unlock_dlc(app) -> None:
     DlcUnlockDialog(app)
 
 
-class DlcUnlockDialog(ctk.CTkToplevel):
+class DlcUnlockDialog(IconToplevel):
     def __init__(self, app):
         super().__init__(app)
         self.app = app
