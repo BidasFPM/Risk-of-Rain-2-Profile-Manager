@@ -1,0 +1,4 @@
+customtkinter
+pillow
+# Only needed to build the .exe:
+pyinstaller

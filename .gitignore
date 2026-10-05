@@ -1,0 +1,13 @@
+__pycache__/
+.venv/
+env/
+.env
+*.pyc
+build/
+dist/
+*.spec
+backups/
+ror2_database.json
+diagnostics_*.txt
+status_*.txt
+build*.py
