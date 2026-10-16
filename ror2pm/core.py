@@ -34,7 +34,7 @@ from .identify import identify, tier_sort_key
 # 1. IDENTIFICATION, CONSTANTS AND PATHS
 # ---------------------------------------------------------------------------
 APP_NAME = "RoR2 Profile Manager"
-VERSION = "2.16"
+VERSION = "2.15"
 STEAM_APP_ID = "632360"
 GAME_PROCESS = "Risk of Rain 2.exe"
 BACKUP_KEEP = 15
