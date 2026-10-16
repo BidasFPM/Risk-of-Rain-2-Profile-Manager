@@ -34,7 +34,7 @@ from .identify import identify, tier_sort_key
 # 1. IDENTIFICATION, CONSTANTS AND PATHS
 # ---------------------------------------------------------------------------
 APP_NAME = "RoR2 Profile Manager"
-VERSION = "2.14"
+VERSION = "2.16"
 STEAM_APP_ID = "632360"
 GAME_PROCESS = "Risk of Rain 2.exe"
 BACKUP_KEEP = 15
@@ -95,9 +95,13 @@ DroneTech.DroneHauler DroneTech.ShieldFormation DroneTech.CommandHeadbutt
 Seeker.SoulSpiral Seeker.Meditate Seeker.Sojourn
 FalseSon.LaserOfTheFather FalseSon.LunarSpikes FalseSon.StepOfTheBrothers
 Chef.Sear Chef.Glaze Chef.Roll
+Commando.Sabotage Huntress.LaserCyclone Croco.CloyingBreath Mage.TectonicBlast Engi.LaserCutter Treebot.Proliferation
+Enforcer2.RageGas Enforcer2.KineticCharge Enforcer2.ClusterGrenade Enforcer2.ShieldLeap
+Acolyte.Javelin Acolyte.SoulJar Acolyte.Backpack
 """.split()
 _SKIN_OWNERS = ["Captain", "Commando", "Croco", "Engi", "Huntress", "Loader", "Mage", "Merc", "Toolbot",
-                "Treebot", "Bandit2", "RailGunner", "VoidSurvivor", "Seeker", "FalseSon", "Chef", "Drifter"]
+                "Treebot", "Bandit2", "RailGunner", "VoidSurvivor", "Seeker", "FalseSon", "Chef", "Drifter",
+                "Enforcer2", "Acolyte"]
 _ARTIFACTS = """
 Bomb Command EliteOnly Enigma FriendlyFire Glass MixEnemy MonsterTeamGainsItems RandomSurvivorOnRespawn
 Sacrifice ShadowClone SingleMonsterType Swarms TeamDeath WeakAssKnees WispOnDeath Delusion Devotion Rebirth Prestige
@@ -225,7 +229,13 @@ DrifterTinkerAchievement DrifterTornadoSlamAchievement DrifterClearGameMonsoon F
 HuntressPurge CommandoPurge DroneTechJuggleLemurian EngiPurge CrocoPurge MercPurge Bandit2Decompile ToolbotPurge
 DroneTechDefeatVultureBossWhileAirborne MageDecompile CaptainDecompile LoaderDecompile TreebotDecompile
 SeekerAirMultiHit SeekerPerfect20Meditation ChefMeridianEvent SeekerClearMeridianEvent ObtainArtifactRebirth
-ObtainArtifactDevotion ObtainArtifactDelusion ObtainArtifactPrestige
+ObtainArtifactDevotion ObtainArtifactDelusion ObtainArtifactPrestige ABrokenRitual Enforcer2RepeatedlyDamageMagmaWorm Enforcer2BlockXTeleporter Enforcer2ParryVagrant Enforcer2TankTitanLaser
+Enforcer2ClearGameMonsoon Enforcer2ClearChampRush
+AcolyteReaperMultiKill AcolyteJuggleLemurian AcolyteUniqueSacrifices AcolyteClearGameMonsoon AcolyteClearUltima
+CommandoClearChampRush HuntressClearChampRush CrocoClearChampRush SeekerClearChampRush ChefClearChampRush
+Bandit2ClearUltima EngiClearUltima MageClearUltima TreebotClearUltima CaptainClearUltima
+ToolbotClearGameHexes MercClearGameHexes LoaderClearGameHexes RailgunnerClearGameHexes VoidSurvivorClearGameHexes FalseSonClearGameHexes
+EngiBatteryDrone MagePillarSkip TreebotClearGameWithLunars CrocoClearGameRestack
 """.split() + [f"ObtainArtifact{a}" for a in _ARTIFACTS]
 
 
@@ -261,8 +271,46 @@ ACH_PREFIXES: dict[str, list[str]] = {
     "Engineer": ["engi"], "Artificer": ["mage"], "Mercenary": ["merc"], "REX": ["treebot"],
     "Loader": ["loader"], "Acrid": ["croco"], "Captain": ["captain"], "Railgunner": ["railgunner"],
     "Void Fiend": ["voidsurvivor"], "Seeker": ["seeker"], "False Son": ["falseson"],
-    "Chef": ["chef"], "Drifter": ["drifter"], "Operator": ["dronetech"],
+    "Chef": ["chef"], "Drifter": ["drifter"], "Operator": ["dronetech"], "Enforcer": ["enforcer"], "Acolyte": ["acolyte"],
 }
+
+
+# Hallowed Concepts skins. Real IDs (Skins.<owner>.<key>) come from the game's unlockable
+# definitions: the Enforcer's internal name is "Enforcer2" (not "Enforcer"); the three
+# 6-survivor challenge groups use the keys AltSkinLynx / AltSkinHallow / AltSkinFungal.
+#   owner id -> (display name used in SURVIVOR_DATA, achievement prefix, skin key, skin name)
+_HC_GROUPS = {
+    "AltSkinLynx":   ("Dying to Meet You", "ClearChampRush"),    # clear Soulbound Threshold before the 4th teleporter
+    "AltSkinHallow": ("Memento Mori", "ClearUltima"),            # defeat the boss behind the Reincarnation door
+    "AltSkinFungal": ("Against All Odds", "ClearGameHexes"),     # finish a run holding 10+ Hexes
+}
+_HC_SKINS: list[tuple[str, str, str, str, str]] = [
+    # (SURVIVOR_DATA name, skin owner id, achievement prefix, skin key, skin name or "")
+    ("Commando", "Commando", "Commando", "AltSkinLynx", "Lacerated"),
+    ("Huntress", "Huntress", "Huntress", "AltSkinLynx", "Vesper"),
+    ("Acrid", "Croco", "Croco", "AltSkinLynx", ""),
+    ("Seeker", "Seeker", "Seeker", "AltSkinLynx", ""),
+    ("Chef", "Chef", "Chef", "AltSkinLynx", ""),
+    ("Enforcer", "Enforcer2", "Enforcer2", "AltSkinLynx", "Impasse"),
+    ("Bandit", "Bandit2", "Bandit2", "AltSkinHallow", ""),
+    ("Engineer", "Engi", "Engi", "AltSkinHallow", ""),
+    ("Artificer", "Mage", "Mage", "AltSkinHallow", ""),
+    ("REX", "Treebot", "Treebot", "AltSkinHallow", ""),
+    ("Captain", "Captain", "Captain", "AltSkinHallow", ""),
+    ("Acolyte", "Acolyte", "Acolyte", "AltSkinHallow", "Vessel"),
+    ("MUL-T", "Toolbot", "Toolbot", "AltSkinFungal", "Yellowcap"),
+    ("Mercenary", "Merc", "Merc", "AltSkinFungal", "Rhizine"),
+    ("Loader", "Loader", "Loader", "AltSkinFungal", "Truffle"),
+    ("Railgunner", "RailGunner", "Railgunner", "AltSkinFungal", "Crypsis"),
+    ("Void Fiend", "VoidSurvivor", "VoidSurvivor", "AltSkinFungal", "Justified"),
+    ("False Son", "FalseSon", "FalseSon", "AltSkinFungal", "Envoy"),
+]
+HC_SKIN_CODES = [f"Skins.{o}.{k}" for _n, o, _a, k, _s in _HC_SKINS]
+for _n, _o, _a, _k, _s in _HC_SKINS:
+    ACH_LINKS[f"Skins.{_o}.{_k}"] = f"{_a}{_HC_GROUPS[_k][1]}"
+# Monsoon Mastery skins of the two new survivors
+ACH_LINKS["Skins.Enforcer2.Alt1"] = "Enforcer2ClearGameMonsoon"
+ACH_LINKS["Skins.Acolyte.Alt1"] = "AcolyteClearGameMonsoon"
 
 
 def _m(n: str) -> tuple[str, str, str]:
@@ -363,7 +411,54 @@ SURVIVOR_DATA = [
       ("DroneTechJuggleLemurian", "skill (Lemurian)", None),
       ("DroneTechUniqueDrones", "skill (Drones)", None)],
      [("DroneTechClearGameMonsoon", "Mastery", None)]),
+    # Enforcer is unlocked by default with the DLC. Internal name: "Enforcer2".
+    # The skill <-> achievement pairing is not known for sure, so each one is listed on its own
+    # (both are always written by "Unlock All"; the skill unlock is what the game actually reads).
+    ("Enforcer", None, None,
+     [(None, "Rage Gas", "Skills.Enforcer2.RageGas"),
+      (None, "Kinetic Charge", "Skills.Enforcer2.KineticCharge"),
+      (None, "Cluster Grenade", "Skills.Enforcer2.ClusterGrenade"),
+      (None, "Shield Leap", "Skills.Enforcer2.ShieldLeap"),
+      ("Enforcer2RepeatedlyDamageMagmaWorm", "Achievement: Burning Lead", None),
+      ("Enforcer2ParryVagrant", "Achievement: +PARRY", None),
+      ("Enforcer2BlockXTeleporter", "Achievement: Safe and Sound", None),
+      ("Enforcer2TankTitanLaser", "Achievement: Indomitable", None)],
+     [("Enforcer2ClearGameMonsoon", "Mastery", "Skins.Enforcer2.Alt1")]),
+    ("Acolyte", "Characters.Acolyte", "ABrokenRitual",
+     [(None, "Javelin", "Skills.Acolyte.Javelin"),
+      (None, "Soul Jar", "Skills.Acolyte.SoulJar"),
+      (None, "Backpack", "Skills.Acolyte.Backpack"),
+      ("AcolyteReaperMultiKill", "Achievement: Bloodbath", None),
+      ("AcolyteJuggleLemurian", "Achievement: Not Even Close", None),
+      ("AcolyteUniqueSacrifices", "Achievement: Hit List", None)],
+     [("AcolyteClearGameMonsoon", "Mastery", "Skins.Acolyte.Alt1")]),
 ]
+
+
+# IDs that older versions of this tool guessed for Enforcer/Acolyte. They do not exist in the game
+# (the Enforcer is "Enforcer2"); if they are in a profile they are harmless, so just hide them.
+OBSOLETE_UNLOCKS = frozenset(
+    [f"Skills.Enforcer.{x}" for x in ("Trenchbroom ShrapnelGrenade SteelProtection SurgeProtection "
+                                       "ShieldTackle Ripcord RallyPoint CrashPoint").split()]
+    + ["Skins.Enforcer.Alt1", "Skins.Enforcer.Alt2", "Skins.Acolyte.Alt2"]
+    + ["EnforcerBurningLead", "EnforcerSafeAndSound", "EnforcerParry", "EnforcerIndomitable",
+       "EnforcerClearGameMonsoon", "EnforcerDyingToMeetYou", "AcolyteBloodbath"]
+    + [f"Skills.Acolyte.{x}" for x in ("BladeSlice TorrentialSlash BolaThrow HarrowingChains BladeSling "
+                                        "BladeDash SoulStorm Sacrifice Banish DarkSummons AnimaEcho").split()]
+)
+
+def _add_hc_skins() -> None:
+    """Add each Hallowed Concepts challenge skin to its survivor's row in SURVIVOR_DATA."""
+    by_name = {row[0]: i for i, row in enumerate(SURVIVOR_DATA)}
+    for name, owner, ach_prefix, key, skin in _HC_SKINS:
+        i = by_name[name]
+        n, s_unlock, s_ach, skills, skins = SURVIVOR_DATA[i]
+        label = skin or _HC_GROUPS[key][0]
+        ach = f"{ach_prefix}{_HC_GROUPS[key][1]}"
+        SURVIVOR_DATA[i] = (n, s_unlock, s_ach, skills, list(skins) + [(ach, label, f"Skins.{owner}.{key}")])
+
+
+_add_hc_skins()
 
 
 def _survivor_label_map() -> dict[str, str]:
@@ -912,7 +1007,7 @@ _DLC_CACHE: dict[str, str] = {}
 
 DLC_LABELS: dict[str, str] = {
     "Base": "Base game", "SotV": "Survivors of the Void",
-    "SotS": "Seekers of the Storm", "AC": "Alloyed Collective",
+    "SotS": "Seekers of the Storm", "AC": "Alloyed Collective", "HC": "Hallowed Concepts",
 }
 
 
@@ -1114,7 +1209,7 @@ def survivor_entries(data: tuple, profile: Profile | None = None) -> list[Entry]
 
     def extra(code: str, note: str) -> None:
         group = _unlock_group(code, keys)
-        if group is None or code.lower() in known:
+        if group is None or code.lower() in known or code in OBSOLETE_UNLOCKS:
             return
         known.add(code.lower())
         parts = code.split(".")
@@ -1130,6 +1225,8 @@ def survivor_entries(data: tuple, profile: Profile | None = None) -> list[Entry]
             extra(code, "from profile")
         prefixes = ACH_PREFIXES.get(name, [name.lower()])
         for ach in sorted(profile.achievements):
+            if ach in OBSOLETE_UNLOCKS:
+                continue
             if ach.lower() not in known_a and any(ach.lower().startswith(p) for p in prefixes):
                 known_a.add(ach.lower())
                 entries.append((ach, None, f"Achievement · {ach}  (from profile)", "ach"))

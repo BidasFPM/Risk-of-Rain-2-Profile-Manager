@@ -14,6 +14,7 @@ SURVIVOR_NAMES: dict[str, str] = {
     "Croco": "Acrid", "Captain": "Captain", "Railgunner": "Railgunner", "RailGunner": "Railgunner",
     "VoidSurvivor": "Void Fiend", "Seeker": "Seeker", "FalseSon": "False Son", "Chef": "CHEF",
     "DroneTech": "Operator", "Drifter": "Drifter", "Heretic": "Heretic",
+    "Enforcer": "Enforcer", "Enforcer2": "Enforcer", "Acolyte": "Acolyte",
 }
 
 MONSTER_NAMES: dict[str, str] = {
@@ -35,6 +36,11 @@ MONSTER_NAMES: dict[str, str] = {
     "VoidBarnacleBody": "Void Barnacle", "MegaConstructBody": "Xi Construct",
     "MinorConstructBody": "Alpha Construct", "AcidLarva": "Larva", "VoidMegaCrab": "Void Devastator",
     "ScorchlingBody": "Scorchling", "HalcyoniteBody": "Halcyonite", "FalseSonBossBody": "False Son",
+    "LynxBerserkerBody": "Lynx Berserker", "LynxAssassinBody": "Lynx Assassin",
+    "LynxDeadeyeBody": "Lynx Deadeye", "MimicEnemyBody": "Mimic",
+    "LynxTotemBody": "Lynx Totem", "ShruumBody": "Shruum",
+    "CorrodedWurmBody": "Corroded Wurm", "AnimaHarvesterBody": "Anima Harvester",
+    "EchoOfProvidenceBody": "Echo of Providence",
 }
 
 DRONE_NAMES: dict[str, str] = {
@@ -60,17 +66,26 @@ ARTIFACT_NAMES: dict[str, str] = {
 SURVIVOR_DLC: dict[str, str] = {
     "Railgunner": "SotV", "Void Fiend": "SotV",
     "Seeker": "SotS", "False Son": "SotS", "CHEF": "SotS",
-    "Drifter": "AC", "Operator": "AC",
+    "Drifter": "AC", "Operator": "AC", "Enforcer": "HC", "Acolyte": "HC",
 }
 MONSTER_DLC: dict[str, str] = {
     "VoidInfestorBody": "SotV", "VoidJailerBody": "SotV", "VoidBarnacleBody": "SotV",
     "VoidMegaCrab": "SotV", "Nullifier": "SotV", "MegaConstructBody": "SotV",
     "MinorConstructBody": "SotV", "AcidLarva": "SotV",
     "ScorchlingBody": "SotS", "HalcyoniteBody": "SotS", "FalseSonBossBody": "SotS",
+    "LynxBerserkerBody": "HC", "LynxAssassinBody": "HC", "LynxDeadeyeBody": "HC",
+    "MimicEnemyBody": "HC", "LynxTotemBody": "HC", "ShruumBody": "HC",
+    "CorrodedWurmBody": "HC", "AnimaHarvesterBody": "HC", "EchoOfProvidenceBody": "HC",
 }
 ARTIFACT_DLC: dict[str, str] = {"Delusion": "SotV", "Devotion": "SotS"}
 
-SKIN_NAMES: dict[str, str] = {"Alt1": "Mastery", "Alt2": "Grandmastery"}
+SKIN_NAMES: dict[str, str] = {
+    "Alt1": "Mastery", "Alt2": "Grandmastery",
+    # Hallowed Concepts challenge skins (see core._HC_GROUPS)
+    "AltSkinLynx": "Dying to Meet You", "AltSkinHallow": "Memento Mori", "AltSkinFungal": "Against All Odds",
+}
+# Skin keys that belong to the Hallowed Concepts DLC (the skins need the DLC; the 6 new skills do not)
+HC_SKIN_KEYS = {"AltSkinLynx", "AltSkinHallow", "AltSkinFungal"}
 
 # Tiers (R2Wiki) -> texto apresentado
 TIER_LABELS: dict[str, str] = {
@@ -86,4 +101,5 @@ TIER_ORDER: dict[str, int] = {
 DLC_SHORT: dict[str, str] = {
     "No DLC": "Base", "": "Base", "Survivors of the Void": "SotV", "SOTV": "SotV",
     "Seekers of the Storm": "SotS", "SOTS": "SotS", "Alloyed Collective": "AC", "AC": "AC",
+    "Hallowed Concepts": "HC", "HC": "HC",
 }

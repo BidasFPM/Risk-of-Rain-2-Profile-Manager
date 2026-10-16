@@ -85,6 +85,8 @@ def identify(code: str, survivor_labels: dict[str, str] | None = None) -> Identi
     if who.dlc != "Base":
         return who
     dlc = ""
+    if who.kind == "Skin" and code.rpartition(".")[2] in N.HC_SKIN_KEYS:
+        return replace(who, dlc="HC")
     if who.kind in _SURVIVOR_KINDS:
         dlc = N.SURVIVOR_DLC.get(who.group, "")
     elif who.kind == "Monster":

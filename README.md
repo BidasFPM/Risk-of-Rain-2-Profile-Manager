@@ -1,8 +1,21 @@
-# RoR2 Profile Manager — v2.14
+# RoR2 Profile Manager — v2.16
 
 GUI application (customtkinter) to manage a Risk of Rain 2 profile: achievements, unlocks,
 logbook, items, skins, artifacts, Eclipse, lunar coins and backups.
 It always makes a backup before saving.
+
+## What's new in v2.16
+
+- **Hallowed Concepts unlocks fixed.** The Enforcer's internal name in the game is `Enforcer2`
+  (the old IDs `Skills.Enforcer.*` / `Skins.Enforcer.*` / `Enforcer…` achievements do not exist),
+  so nothing was being unlocked for him. Now: skills `Skills.Enforcer2.RageGas / KineticCharge /
+  ClusterGrenade / ShieldLeap`, achievements `Enforcer2…`, Acolyte skills `Javelin / SoulJar /
+  Backpack` and achievements `Acolyte…`.
+- The Enforcer's Monsoon skin (formerly shown as "Palisade") is now listed as **Mastery**; the
+  *Dying to Meet You* skin is **Impasse**.
+- All 18 Hallowed Concepts challenge skins (`AltSkinLynx`, `AltSkinHallow`, `AltSkinFungal`) are
+  now part of the database, the Survivors tab and the *Hallowed Concepts* DLC filter.
+- Old wrong IDs that earlier versions may have written to a profile are harmless and are hidden.
 
 ## What's new in v2.14
 
@@ -15,7 +28,7 @@ It always makes a backup before saving.
 ## DLC tools 
 
 - **Unlock by DLC** (sidebar, *Quick actions*): unlocks everything from one pack (Base, Survivors of the Void,
-  Seekers of the Storm, Alloyed Collective) in the profile. This edits progress only; playing DLC content
+  Seekers of the Storm, Alloyed Collective, Hallowed Concepts) in the profile. This edits progress only; playing DLC content
   in-game still requires owning the DLC.
 - **DLC filter** in every category list; "Enable all" respects it.
 - **Progress by DLC** on the Dashboard.
